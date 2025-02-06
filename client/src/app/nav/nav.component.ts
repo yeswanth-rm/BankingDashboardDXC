@@ -22,7 +22,10 @@ export class NavComponent {
   login() {
     this.accountService.login(this.model).subscribe({
       next: _ => {
-        this.router.navigateByUrl('/members')
+        const userString = localStorage.getItem('user');
+        if (!userString) return;
+        const username = JSON.parse(userString).username;
+        this.router.navigateByUrl('/members/'+ username)
       },
       error: error => this.toastr.error(error.error)
     })

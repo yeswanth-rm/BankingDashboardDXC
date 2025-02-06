@@ -1,26 +1,26 @@
 <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-primary">
     <div class="container">
-        <a class="navbar-brand" routerLink="/" routerLinkActive="active">Dating App</a>
+        <a class="navbar-brand" routerLink="/" routerLinkActive="active">Banking dashboard</a>
 
 
         <ul class="navbar-nav me-auto mb-2 mb-md-0">
             @if (accountService.currentUser()) {
                 <li class="nav-item">
-                    <a routerLink="/members" routerLinkActive="active" class="nav-link">Matches</a>
+                    <a routerLink="/members/{{accountService.currentUser()?.username}}" routerLinkActive="active" class="nav-link">Home</a>
                 </li>
-                <li class="nav-item">
+                <!-- <li class="nav-item">
                     <a routerLink="/lists" routerLinkActive="active" class="nav-link">Lists</a>
-                </li>
+                </li> -->
                 <li class="nav-item">
-                    <a routerLink="/messages" routerLinkActive="active" class="nav-link">Messages</a>
+                    <a routerLink="/messages" routerLinkActive="active" class="nav-link">Recent Transactions</a>
                 </li>
-                <li *appHasRole="['Admin', 'Moderator']" class="nav-item">
+                <!-- <li *appHasRole="['Admin', 'Moderator']" class="nav-item">
                     <a routerLink="/admin" routerLinkActive="active" class="nav-link">Admin</a>
-                </li>
+                </li> -->
             }
-            <li class="nav-item">
+            <!-- <li class="nav-item">
                 <a routerLink="/errors" routerLinkActive="active" class="nav-link">Errors</a>
-            </li>
+            </li> -->
         </ul>
 
         @if (accountService.currentUser()) {
@@ -33,7 +33,7 @@
                 Welcome {{accountService.currentUser()?.knownAs}}
             </a>
             <div *dropdownMenu class="dropdown-menu">
-                <a routerLink="/member/edit" class="dropdown-item">Edit profile</a>
+                <!-- <a routerLink="/member/edit" class="dropdown-item">Edit profile</a> -->
                 <div class="dropdown-divider"></div>
                 <a class="dropdown-item" (click)="logout()">Logout</a>
             </div>

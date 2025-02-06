@@ -18,13 +18,13 @@ public class MessagesController(IUnitOfWork unitOfWork,
         var username = User.GetUsername();
 
         if (username == createMessageDto.RecipientUsername.ToLower())
-            return BadRequest("You cannot message yourself");
+            return BadRequest("You cannot transfer yourself");
         
         var sender = await unitOfWork.UserRepository.GetUserByUsernameAsync(username);
         var recipient = await unitOfWork.UserRepository.GetUserByUsernameAsync(createMessageDto.RecipientUsername);
 
         if (recipient == null || sender == null || sender.UserName == null || recipient.UserName == null) 
-            return BadRequest("Cannot send message at this time");
+            return BadRequest("Cannot send at this time");
 
         var message = new Message
         {
@@ -35,8 +35,30 @@ public class MessagesController(IUnitOfWork unitOfWork,
             Content = createMessageDto.Content
         };
 
+        
+        var receiverBalance = 0.0;
+        var senderBalance = 0.0;
+        var amount = Convert.ToDouble(createMessageDto.Content);
+        try
+        {
+            receiverBalance = Convert.ToDouble(recipient.Introduction);
+            senderBalance = Convert.ToDouble(sender.Introduction);
+            double resultingBalance = senderBalance - amount;
+            
+            if(resultingBalance < 0)
+            {
+                return BadRequest("negative balance not allowed");
+            }
+            sender.Introduction = Convert.ToString(resultingBalance);
+            recipient.Introduction = Convert.ToString(amount + receiverBalance);
+        }
+        catch (Exception ex)
+        {
+            return BadRequest("Update the balances properly");
+        }
         unitOfWork.MessageRepository.AddMessage(message);
-
+        unitOfWork.UserRepository.Update(recipient);
+        unitOfWork.UserRepository.Update(sender);
         if (await unitOfWork.Complete()) return Ok(mapper.Map<MessageDto>(message));
 
         return BadRequest("Failed to save message");
